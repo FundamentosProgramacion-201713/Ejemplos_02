@@ -21,13 +21,15 @@ def rebotar():
     x = ANCHO//2
     y = ALTO//2
     radio = 20
-    DX = +15    # derecha (suma), izquierda resta
-    DY = 10     # abajo suma, arriba resta
+    DX = +17    # derecha (suma), izquierda resta
+    DY = 12     # abajo suma, arriba resta
 
     # raqueta
     ALTO_RAQUETA = ALTO//5
     ANCHO_RAQUETA = ALTO_RAQUETA//4
     yRaqueta = ALTO//2 - 50
+    moverRaqueta = False
+    DY_RAQUETA = 20
 
     # Ejemplo del uso de pygame
     pygame.init()  # Inicializa pygame
@@ -40,8 +42,16 @@ def rebotar():
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:  # El usuario hizo click en el botón de salir
                 termina = True
-
-            # Aquí podemos revisar el teclado y mover la raqueta
+            # Pregunta si se oprimió alguna tecla
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_UP:   # flecha arriba
+                    moverRaqueta = True
+                    DY_RAQUETA = -20
+                elif evento.key == pygame.K_DOWN:   # flecha abajo
+                    moverRaqueta = True
+                    DY_RAQUETA = +20
+            if evento.type == pygame.KEYUP:     # se liberó la tecla
+                moverRaqueta = False
 
         # Borrar pantalla
         ventana.fill(VERDE_BANDERA)
@@ -57,26 +67,28 @@ def rebotar():
 
         # Dibujar Pelota
         pygame.draw.circle(ventana,ROJO,(x ,y),radio)
-        x += DX      # x = x + 2
-        y += DY
 
+        # Actualizar la posición de la pelota
+        x += DX      # x = x + DX
+        y += DY
+        # Prueba colisión
         if y>=ALTO-radio or y<=radio:
             DY = -DY
-
         if x>=ANCHO-radio:  # or x<=radio:
             DX = -DX
 
         # Prueba colisión con raqueta
-        if x<=ANCHO_RAQUETA and y>=yRaqueta and y<=yRaqueta+ALTO_RAQUETA:
+        if x>=0 and x<=ANCHO_RAQUETA and y>=yRaqueta and y<=yRaqueta+ALTO_RAQUETA:
             DX = -DX
 
         # IA??? qué tal esto? :) :) :)
-        yRaqueta = y - ALTO_RAQUETA//2 + radio//2
-
-        # Después probaremos la colisión entre raqueta y pelota
+        # yRaqueta = y - ALTO_RAQUETA//2 + radio//2
+        # Si es necesario, mueve la raqueta
+        if moverRaqueta:
+            yRaqueta += DY_RAQUETA
 
         pygame.display.flip()  # Actualiza trazos
-        reloj.tick(60)  # 60 fps
+        reloj.tick(40)  # 40 fps
 
     pygame.quit()  # termina pygame
 
