@@ -80,6 +80,7 @@ def rebotar():
         # Prueba colisión con raqueta
         if x>=0 and x<=ANCHO_RAQUETA and y>=yRaqueta and y<=yRaqueta+ALTO_RAQUETA:
             DX = -DX
+            x = ANCHO_RAQUETA+1
 
         # IA??? qué tal esto? :) :) :)
         # yRaqueta = y - ALTO_RAQUETA//2 + radio//2
